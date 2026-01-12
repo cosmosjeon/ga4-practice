@@ -3,83 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechFlow - SaaS 생산성 도구</title>
+    <title>TechFlow - 팀 생산성을 200% 높이는 프로젝트 관리 도구</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Mixpanel -->
+    <!-- Microsoft Clarity -->
     <script type="text/javascript">
-        (function(e,c){if(!c.__SV){var l,h;window.mixpanel=c;c._i=[];c.init=function(q,r,f){function t(d,a){var g=a.split(".");2==g.length&&(d=d[g[0]],a=g[1]);d[a]=function(){d.push([a].concat(Array.prototype.slice.call(arguments,0)))}}var b=c;"undefined"!==typeof f?b=c[f]=[]:f="mixpanel";b.people=b.people||[];b.toString=function(d){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);d||(a+=" (stub)");return a};b.people.toString=function(){return b.toString(1)+".people (stub)"};l="disable time_event track track_pageview track_links track_forms track_with_groups add_group set_group remove_group register register_once alias unregister identify name_tag set_config reset opt_in_tracking opt_out_tracking has_opted_in_tracking has_opted_out_tracking clear_opt_in_out_tracking start_batch_senders start_session_recording stop_session_recording people.set people.set_once people.unset people.increment people.append people.union people.track_charge people.clear_charges people.delete_user people.remove".split(" ");
-        for(h=0;h<l.length;h++)t(b,l[h]);var n="set set_once union unset remove delete".split(" ");b.get_group=function(){function d(p){a[p]=function(){b.push([g,[p].concat(Array.prototype.slice.call(arguments,0))])}}for(var a={},g=["get_group"].concat(Array.prototype.slice.call(arguments,0)),m=0;m<n.length;m++)d(n[m]);return a};c._i.push([q,r,f])};c.__SV=1.2;var k=e.createElement("script");k.type="text/javascript";k.async=!0;k.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===
-        e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";e=e.getElementsByTagName("script")[0];e.parentNode.insertBefore(k,e)}})(document,window.mixpanel||[])
-
-        mixpanel.init('25ae0cf24ebef4cca92200d7ecb3dadb', {
-            autocapture: true,
-            record_sessions_percent: 100,
-        })
+        (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+        })(window, document, "clarity", "script", "v06gb7snx9");
     </script>
     <script>
-        // AARRR 퍼널 이벤트 추적 함수들
-        const AARRR = {
-            // Acquisition - 획득
-            trackAcquisition: function(source) {
-                mixpanel.track('Acquisition', {
-                    traffic_source: source,
-                    funnel_stage: 'acquisition'
-                });
-                console.log('📊 [Acquisition] 트래픽 소스:', source);
-            },
-
-            // Activation - 활성화
-            trackActivation: function(action) {
-                mixpanel.track('Activation', {
-                    activation_type: action,
-                    funnel_stage: 'activation'
-                });
-                console.log('🎯 [Activation] 활성화 액션:', action);
-            },
-
-            // Retention - 유지
-            trackRetention: function(feature) {
-                mixpanel.track('Retention', {
-                    feature_used: feature,
-                    funnel_stage: 'retention'
-                });
-                console.log('🔄 [Retention] 기능 재사용:', feature);
-            },
-
-            // Revenue - 수익
-            trackRevenue: function(plan, amount) {
-                mixpanel.track('Revenue', {
-                    plan: plan,
-                    amount: amount,
-                    currency: 'KRW',
-                    funnel_stage: 'revenue'
-                });
-                mixpanel.people.track_charge(amount);
-                console.log('💰 [Revenue] 결제:', plan, amount + '원');
-            },
-
-            // Referral - 추천
-            trackReferral: function(method) {
-                mixpanel.track('Referral', {
-                    share_method: method,
-                    funnel_stage: 'referral'
-                });
-                console.log('📢 [Referral] 공유:', method);
-            }
-        };
-
-        // 페이지 로드 시 획득 추적
+        // 수요 검증을 위한 행동 추적
         document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const source = urlParams.get('utm_source') || 'direct';
-            AARRR.trackAcquisition(source);
-
-            // Mixpanel 페이지뷰
-            mixpanel.track('Page View', {
-                page: 'landing',
-                utm_source: source
-            });
+            // Clarity 커스텀 태그 설정
+            if (typeof clarity !== 'undefined') {
+                clarity("set", "page_type", "landing");
+                clarity("set", "utm_source", new URLSearchParams(window.location.search).get('utm_source') || 'direct');
+            }
         });
+
+        // CTA 클릭 추적
+        function trackCTA(action) {
+            if (typeof clarity !== 'undefined') {
+                clarity("set", "cta_clicked", action);
+                clarity("set", "interest_level", "high");
+            }
+            console.log('🎯 [CTA]', action);
+        }
+
+        // 기능 관심도 추적
+        function trackFeatureInterest(feature) {
+            if (typeof clarity !== 'undefined') {
+                clarity("set", "feature_interest", feature);
+            }
+            console.log('👀 [Feature Interest]', feature);
+        }
+
+        // 가격 관심도 추적
+        function trackPricingInterest(plan) {
+            if (typeof clarity !== 'undefined') {
+                clarity("set", "pricing_interest", plan);
+                clarity("set", "purchase_intent", "true");
+            }
+            console.log('💰 [Pricing Interest]', plan);
+        }
     </script>
 </head>
 <body>
@@ -93,9 +61,8 @@
             <div class="nav-links">
                 <a href="#features">기능</a>
                 <a href="#pricing">요금제</a>
-                <a href="dashboard.html">대시보드</a>
                 <a href="signup.html" class="btn btn-outline">로그인</a>
-                <a href="signup.html" class="btn btn-primary">무료 시작</a>
+                <a href="signup.html" class="btn btn-primary" onclick="trackCTA('nav_signup')">무료 시작</a>
             </div>
         </div>
     </nav>
@@ -106,10 +73,10 @@
             <h1>팀 생산성을 <span class="highlight">200%</span> 높이세요</h1>
             <p class="hero-subtitle">TechFlow와 함께라면 프로젝트 관리가 즐거워집니다.<br>지금 바로 무료로 시작해보세요.</p>
             <div class="hero-cta">
-                <a href="signup.html" class="btn btn-primary btn-large" onclick="AARRR.trackActivation('hero_cta_click')">
+                <a href="signup.html" class="btn btn-primary btn-large" onclick="trackCTA('hero_main_cta')">
                     무료로 시작하기
                 </a>
-                <a href="#demo" class="btn btn-secondary btn-large" onclick="AARRR.trackActivation('watch_demo')">
+                <a href="#demo" class="btn btn-secondary btn-large" onclick="trackCTA('watch_demo')">
                     데모 보기 →
                 </a>
             </div>
@@ -152,30 +119,96 @@
         </div>
     </section>
 
+    <!-- 문제 제기 섹션 -->
+    <section class="problem-section" style="padding: 80px 0; background: #fff;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 48px;">이런 문제, 겪어보셨나요?</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;">
+                <div style="padding: 32px; background: #fef2f2; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">😫</div>
+                    <h3 style="margin-bottom: 12px; color: #dc2626;">업무가 어디있는지 모름</h3>
+                    <p style="color: #666;">슬랙, 이메일, 노션... 업무가 여기저기 흩어져 있어요</p>
+                </div>
+                <div style="padding: 32px; background: #fef2f2; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">🤯</div>
+                    <h3 style="margin-bottom: 12px; color: #dc2626;">진행 상황 파악 불가</h3>
+                    <p style="color: #666;">팀원들이 뭘 하고 있는지 매번 물어봐야 해요</p>
+                </div>
+                <div style="padding: 32px; background: #fef2f2; border-radius: 12px; text-align: center;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⏰</div>
+                    <h3 style="margin-bottom: 12px; color: #dc2626;">마감 놓침</h3>
+                    <p style="color: #666;">중요한 일정을 놓쳐서 야근하는 일이 반복돼요</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- 기능 섹션 -->
     <section id="features" class="features">
         <div class="container">
-            <h2>강력한 기능으로<br>업무 효율을 극대화하세요</h2>
+            <h2>TechFlow 하나면<br>모든 문제가 해결됩니다</h2>
             <div class="features-grid">
-                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_task')">
+                <div class="feature-card" onclick="trackFeatureInterest('smart_task')">
                     <div class="feature-icon">📋</div>
                     <h3>스마트 태스크 관리</h3>
                     <p>AI가 우선순위를 자동으로 분석하여 중요한 일부터 처리할 수 있도록 도와드립니다.</p>
                 </div>
-                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_team')">
+                <div class="feature-card" onclick="trackFeatureInterest('realtime_collab')">
                     <div class="feature-icon">👥</div>
                     <h3>실시간 협업</h3>
                     <p>팀원들과 실시간으로 소통하고 프로젝트 진행 상황을 한눈에 파악하세요.</p>
                 </div>
-                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_analytics')">
+                <div class="feature-card" onclick="trackFeatureInterest('analytics')">
                     <div class="feature-icon">📊</div>
                     <h3>상세한 분석</h3>
                     <p>팀 생산성 지표를 분석하고 개선점을 찾아 더 효율적으로 일하세요.</p>
                 </div>
-                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_integration')">
+                <div class="feature-card" onclick="trackFeatureInterest('integration')">
                     <div class="feature-icon">🔗</div>
                     <h3>다양한 연동</h3>
                     <p>Slack, Notion, Google Drive 등 100+ 앱과 쉽게 연동됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 사회적 증거 강화 -->
+    <section style="padding: 80px 0; background: var(--gray-50);">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 48px;">실제 사용자 후기</h2>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;">
+                <div style="padding: 32px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <div style="color: #f59e0b; margin-bottom: 12px;">★★★★★</div>
+                    <p style="margin-bottom: 16px; color: #444;">"TechFlow 도입 후 회의 시간이 50% 줄었어요. 이제 진행 상황을 물어볼 필요가 없거든요."</p>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">김</div>
+                        <div>
+                            <strong>김서연</strong>
+                            <p style="font-size: 13px; color: #888;">스타트업 PM</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding: 32px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <div style="color: #f59e0b; margin-bottom: 12px;">★★★★★</div>
+                    <p style="margin-bottom: 16px; color: #444;">"원격 근무하는 팀인데, TechFlow 덕분에 오히려 소통이 더 잘 돼요."</p>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">이</div>
+                        <div>
+                            <strong>이준혁</strong>
+                            <p style="font-size: 13px; color: #888;">개발팀 리드</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="padding: 32px; background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                    <div style="color: #f59e0b; margin-bottom: 12px;">★★★★★</div>
+                    <p style="margin-bottom: 16px; color: #444;">"다른 툴 다 써봤는데 TechFlow가 제일 직관적이에요. 팀원들 교육도 필요 없었어요."</p>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; background: var(--success); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white;">박</div>
+                        <div>
+                            <strong>박민지</strong>
+                            <p style="font-size: 13px; color: #888;">마케팅 매니저</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -187,7 +220,7 @@
             <h2>심플한 요금제</h2>
             <p class="pricing-subtitle">팀 규모에 맞는 플랜을 선택하세요</p>
             <div class="pricing-grid">
-                <div class="pricing-card">
+                <div class="pricing-card" onclick="trackPricingInterest('free')">
                     <h3>Free</h3>
                     <div class="price">₩0<span>/월</span></div>
                     <ul>
@@ -196,9 +229,9 @@
                         <li>✓ 1GB 저장공간</li>
                         <li>✗ 고급 분석</li>
                     </ul>
-                    <a href="signup.html" class="btn btn-outline" onclick="AARRR.trackRevenue('free', 0)">무료로 시작</a>
+                    <a href="signup.html" class="btn btn-outline" onclick="trackCTA('pricing_free')">무료로 시작</a>
                 </div>
-                <div class="pricing-card popular">
+                <div class="pricing-card popular" onclick="trackPricingInterest('pro')">
                     <span class="badge">인기</span>
                     <h3>Pro</h3>
                     <div class="price">₩15,000<span>/월</span></div>
@@ -208,9 +241,9 @@
                         <li>✓ 100GB 저장공간</li>
                         <li>✓ 고급 분석</li>
                     </ul>
-                    <a href="checkout.html?plan=pro" class="btn btn-primary" onclick="AARRR.trackRevenue('pro', 15000)">Pro 시작하기</a>
+                    <a href="signup.html" class="btn btn-primary" onclick="trackCTA('pricing_pro')">Pro 시작하기</a>
                 </div>
-                <div class="pricing-card">
+                <div class="pricing-card" onclick="trackPricingInterest('enterprise')">
                     <h3>Enterprise</h3>
                     <div class="price">문의</div>
                     <ul>
@@ -219,37 +252,30 @@
                         <li>✓ 무제한 저장공간</li>
                         <li>✓ 맞춤 기능</li>
                     </ul>
-                    <a href="#contact" class="btn btn-outline" onclick="AARRR.trackRevenue('enterprise_inquiry', 0)">문의하기</a>
+                    <a href="#contact" class="btn btn-outline" onclick="trackCTA('pricing_enterprise')">문의하기</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- 공유 섹션 (Referral) -->
-    <section class="referral">
-        <div class="container">
-            <h2>친구에게 공유하고<br>무료 이용 기간을 받으세요!</h2>
-            <p>친구가 가입하면 양쪽 모두 1개월 무료!</p>
-            <div class="share-buttons">
-                <button class="share-btn kakao" onclick="AARRR.trackReferral('kakao')">
-                    💬 카카오톡 공유
-                </button>
-                <button class="share-btn twitter" onclick="AARRR.trackReferral('twitter')">
-                    🐦 트위터 공유
-                </button>
-                <button class="share-btn link" onclick="AARRR.trackReferral('copy_link'); copyLink()">
-                    🔗 링크 복사
-                </button>
-            </div>
+    <!-- 긴급성/희소성 섹션 -->
+    <section style="padding: 60px 0; background: linear-gradient(135deg, #fef3c7, #fde68a);">
+        <div class="container" style="text-align: center;">
+            <p style="font-size: 18px; color: #92400e; margin-bottom: 8px;">🎉 런칭 특별 혜택</p>
+            <h2 style="color: #78350f; margin-bottom: 16px;">지금 가입하면 3개월 무료!</h2>
+            <p style="color: #92400e; margin-bottom: 24px;">선착순 100팀 한정 · 남은 자리: <strong>23팀</strong></p>
+            <a href="signup.html" class="btn btn-primary btn-large" onclick="trackCTA('urgency_cta')" style="background: #78350f;">
+                지금 바로 신청하기
+            </a>
         </div>
     </section>
 
     <!-- CTA 섹션 -->
     <section class="cta">
         <div class="container">
-            <h2>지금 바로 시작하세요</h2>
-            <p>이미 10,000명 이상의 사용자가 TechFlow로 업무 효율을 높이고 있습니다.</p>
-            <a href="signup.html" class="btn btn-primary btn-large" onclick="AARRR.trackActivation('bottom_cta')">
+            <h2>더 이상 비효율적으로 일하지 마세요</h2>
+            <p>지금 바로 TechFlow를 시작하고 팀 생산성을 높이세요.</p>
+            <a href="signup.html" class="btn btn-primary btn-large" onclick="trackCTA('final_cta')">
                 무료로 시작하기
             </a>
         </div>
@@ -269,15 +295,8 @@
                     <a href="#">고객센터</a>
                 </div>
             </div>
-            <p class="copyright">© 2024 TechFlow. Mixpanel AARRR 퍼널 분석 데모용 사이트입니다.</p>
+            <p class="copyright">© 2024 TechFlow. All rights reserved.</p>
         </div>
     </footer>
-
-    <script>
-        function copyLink() {
-            navigator.clipboard.writeText(window.location.href + '?ref=friend');
-            alert('링크가 복사되었습니다!');
-        }
-    </script>
 </body>
 </html>
