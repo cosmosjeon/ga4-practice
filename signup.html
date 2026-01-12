@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - TechFlow</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+
+        // AARRR 퍼널 이벤트
+        const AARRR = {
+            trackActivation: function(action, details) {
+                gtag('event', 'activation', {
+                    'event_category': 'AARRR',
+                    'event_label': action,
+                    'activation_type': action,
+                    ...details
+                });
+                console.log('🎯 [Activation]', action, details || '');
+            },
+            trackSignupStep: function(step) {
+                gtag('event', 'signup_step', {
+                    'event_category': 'funnel',
+                    'event_label': step,
+                    'step_name': step
+                });
+                console.log('📝 [Signup Step]', step);
+            }
+        };
+
+        // 페이지 뷰 추적
+        document.addEventListener('DOMContentLoaded', function() {
+            AARRR.trackActivation('signup_page_view');
+        });
+    </script>
+</head>
+<body>
+    <div class="auth-page">
+        <div class="auth-container">
+            <a href="index.html" class="logo" style="display: flex; justify-content: center; margin-bottom: 32px;">
+                <span class="logo-icon">⚡</span>
+                TechFlow
+            </a>
+            <h1>무료로 시작하기</h1>
+            <p class="subtitle">14일 무료 체험, 신용카드 불필요</p>
+
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-group">
+                    <label for="name">이름</label>
+                    <input type="text" id="name" name="name" placeholder="홍길동" required
+                           onfocus="AARRR.trackSignupStep('name_focus')">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" name="email" placeholder="you@company.com" required
+                           onfocus="AARRR.trackSignupStep('email_focus')">
+                </div>
+
+                <div class="form-group">
+                    <label for="company">회사명</label>
+                    <input type="text" id="company" name="company" placeholder="회사명 (선택)"
+                           onfocus="AARRR.trackSignupStep('company_focus')">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <input type="password" id="password" name="password" placeholder="8자 이상" required minlength="8"
+                           onfocus="AARRR.trackSignupStep('password_focus')">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-large">
+                    무료 계정 만들기
+                </button>
+            </form>
+
+            <div style="margin: 24px 0; text-align: center; color: var(--gray-400);">
+                또는
+            </div>
+
+            <button class="btn btn-outline" style="width: 100%; margin-bottom: 12px;"
+                    onclick="socialSignup('google')">
+                🔍 Google로 계속하기
+            </button>
+
+            <button class="btn btn-outline" style="width: 100%; background: #fee500; border-color: #fee500; color: #000;"
+                    onclick="socialSignup('kakao')">
+                💬 카카오로 계속하기
+            </button>
+
+            <p class="auth-footer">
+                이미 계정이 있으신가요? <a href="signup.html" onclick="AARRR.trackActivation('login_link_click')">로그인</a>
+            </p>
+
+            <p style="margin-top: 24px; font-size: 12px; color: var(--gray-400); text-align: center;">
+                가입 시 <a href="#" style="color: var(--gray-600);">이용약관</a> 및
+                <a href="#" style="color: var(--gray-600);">개인정보처리방침</a>에 동의합니다.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function handleSignup(e) {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                company: document.getElementById('company').value
+            };
+
+            // GA4 이벤트: 회원가입 완료
+            gtag('event', 'sign_up', {
+                'method': 'email',
+                'event_category': 'AARRR',
+                'event_label': 'email_signup'
+            });
+
+            AARRR.trackActivation('signup_complete', {
+                'signup_method': 'email',
+                'has_company': formData.company ? 'yes' : 'no'
+            });
+
+            console.log('✅ [Signup Complete]', formData);
+
+            // 대시보드로 이동
+            alert('🎉 가입이 완료되었습니다!\n대시보드로 이동합니다.');
+            window.location.href = 'dashboard.html';
+        }
+
+        function socialSignup(provider) {
+            gtag('event', 'sign_up', {
+                'method': provider,
+                'event_category': 'AARRR',
+                'event_label': provider + '_signup'
+            });
+
+            AARRR.trackActivation('signup_complete', {
+                'signup_method': provider
+            });
+
+            console.log('✅ [Social Signup]', provider);
+
+            alert('🎉 ' + provider + ' 가입이 완료되었습니다!\n대시보드로 이동합니다.');
+            window.location.href = 'dashboard.html';
+        }
+    </script>
+</body>
+</html>

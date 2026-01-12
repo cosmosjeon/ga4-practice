@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드 - TechFlow</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+
+        // AARRR 퍼널 이벤트
+        const AARRR = {
+            trackRetention: function(feature, details) {
+                gtag('event', 'retention', {
+                    'event_category': 'AARRR',
+                    'event_label': feature,
+                    'feature_used': feature,
+                    ...details
+                });
+                console.log('🔄 [Retention]', feature, details || '');
+            },
+            trackEngagement: function(action) {
+                gtag('event', 'user_engagement', {
+                    'event_category': 'engagement',
+                    'event_label': action
+                });
+                console.log('💡 [Engagement]', action);
+            },
+            trackReferral: function(method) {
+                gtag('event', 'referral', {
+                    'event_category': 'AARRR',
+                    'event_label': method,
+                    'share_method': method
+                });
+                console.log('📢 [Referral]', method);
+            }
+        };
+
+        // 세션 시작 추적
+        document.addEventListener('DOMContentLoaded', function() {
+            const sessionCount = parseInt(localStorage.getItem('sessionCount') || '0') + 1;
+            localStorage.setItem('sessionCount', sessionCount);
+
+            gtag('event', 'dashboard_visit', {
+                'event_category': 'retention',
+                'session_number': sessionCount,
+                'is_returning': sessionCount > 1
+            });
+
+            if (sessionCount > 1) {
+                AARRR.trackRetention('dashboard_return', { session_number: sessionCount });
+            }
+
+            console.log('📊 세션 수:', sessionCount);
+        });
+    </script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- 네비게이션 -->
+        <nav class="dashboard-nav">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⚡</span>
+                TechFlow
+            </a>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <button class="btn btn-outline" onclick="AARRR.trackReferral('invite_team'); alert('팀원 초대 링크가 복사되었습니다!')">
+                    + 팀원 초대
+                </button>
+                <div style="width: 40px; height: 40px; background: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
+                    김
+                </div>
+            </div>
+        </nav>
+
+        <div class="dashboard-content">
+            <!-- 사이드바 -->
+            <aside class="dashboard-sidebar">
+                <ul class="sidebar-menu">
+                    <li>
+                        <a href="#" class="active" onclick="AARRR.trackRetention('menu_dashboard')">
+                            📊 대시보드
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="AARRR.trackRetention('menu_projects')">
+                            📁 프로젝트
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="AARRR.trackRetention('menu_tasks')">
+                            ✅ 태스크
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="AARRR.trackRetention('menu_team')">
+                            👥 팀
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="AARRR.trackRetention('menu_analytics')">
+                            📈 분석
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" onclick="AARRR.trackRetention('menu_settings')">
+                            ⚙️ 설정
+                        </a>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 32px; padding: 20px; background: var(--gray-50); border-radius: 12px;">
+                    <h4 style="margin-bottom: 8px; font-size: 14px;">Pro로 업그레이드</h4>
+                    <p style="font-size: 13px; color: var(--gray-600); margin-bottom: 12px;">
+                        더 많은 기능을 사용해보세요
+                    </p>
+                    <a href="checkout.html?plan=pro" class="btn btn-primary" style="width: 100%; font-size: 14px;"
+                       onclick="gtag('event', 'begin_checkout', {'event_category': 'AARRR', 'plan': 'pro'})">
+                        업그레이드
+                    </a>
+                </div>
+            </aside>
+
+            <!-- 메인 콘텐츠 -->
+            <main class="dashboard-main">
+                <h1>안녕하세요, 김사용자님! 👋</h1>
+
+                <!-- 통계 카드 -->
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="AARRR.trackEngagement('view_total_tasks')">
+                        <h3>총 태스크</h3>
+                        <div class="value">128</div>
+                        <p class="change up">↑ 12% 지난주 대비</p>
+                    </div>
+                    <div class="stat-card" onclick="AARRR.trackEngagement('view_completed')">
+                        <h3>완료됨</h3>
+                        <div class="value">94</div>
+                        <p class="change up">↑ 8% 지난주 대비</p>
+                    </div>
+                    <div class="stat-card" onclick="AARRR.trackEngagement('view_in_progress')">
+                        <h3>진행중</h3>
+                        <div class="value">23</div>
+                        <p class="change down">↓ 5% 지난주 대비</p>
+                    </div>
+                    <div class="stat-card" onclick="AARRR.trackEngagement('view_team_members')">
+                        <h3>팀원</h3>
+                        <div class="value">8</div>
+                        <p class="change up">↑ 2명 추가됨</p>
+                    </div>
+                </div>
+
+                <!-- 프로젝트 리스트 -->
+                <div class="project-list">
+                    <h2>진행중인 프로젝트</h2>
+
+                    <div class="project-item" onclick="AARRR.trackRetention('project_view', {project: 'website'})">
+                        <div class="project-info">
+                            <h4>🌐 웹사이트 리뉴얼</h4>
+                            <p>마감: 2024년 2월 15일 · 태스크 12/20</p>
+                        </div>
+                        <span class="project-status active">진행중</span>
+                    </div>
+
+                    <div class="project-item" onclick="AARRR.trackRetention('project_view', {project: 'app'})">
+                        <div class="project-info">
+                            <h4>📱 모바일 앱 개발</h4>
+                            <p>마감: 2024년 3월 1일 · 태스크 8/35</p>
+                        </div>
+                        <span class="project-status active">진행중</span>
+                    </div>
+
+                    <div class="project-item" onclick="AARRR.trackRetention('project_view', {project: 'marketing'})">
+                        <div class="project-info">
+                            <h4>📣 마케팅 캠페인</h4>
+                            <p>마감: 2024년 1월 30일 · 태스크 5/10</p>
+                        </div>
+                        <span class="project-status pending">검토중</span>
+                    </div>
+
+                    <div class="project-item" onclick="AARRR.trackRetention('project_view', {project: 'documentation'})">
+                        <div class="project-info">
+                            <h4>📚 문서화 작업</h4>
+                            <p>마감: 2024년 2월 28일 · 태스크 3/15</p>
+                        </div>
+                        <span class="project-status active">진행중</span>
+                    </div>
+                </div>
+
+                <!-- 빠른 작업 -->
+                <div style="margin-top: 32px; display: flex; gap: 16px;">
+                    <button class="btn btn-primary" onclick="AARRR.trackRetention('create_task'); alert('새 태스크가 생성되었습니다!')">
+                        + 새 태스크
+                    </button>
+                    <button class="btn btn-outline" onclick="AARRR.trackRetention('create_project'); alert('새 프로젝트가 생성되었습니다!')">
+                        + 새 프로젝트
+                    </button>
+                    <button class="btn btn-outline" onclick="AARRR.trackReferral('invite_modal'); alert('초대 링크: techflow.app/invite/abc123')">
+                        👥 팀원 초대
+                    </button>
+                </div>
+
+                <!-- 활동 로그 데모 -->
+                <div style="margin-top: 32px; padding: 24px; background: white; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 style="margin-bottom: 16px;">🔔 최근 활동</h3>
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--gray-50); border-radius: 8px;">
+                            <span>✅</span>
+                            <div>
+                                <strong>이영희</strong>님이 "로그인 페이지 디자인" 완료
+                                <span style="color: var(--gray-400); font-size: 13px;">· 10분 전</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--gray-50); border-radius: 8px;">
+                            <span>💬</span>
+                            <div>
+                                <strong>박철수</strong>님이 "API 연동" 태스크에 댓글 추가
+                                <span style="color: var(--gray-400); font-size: 13px;">· 32분 전</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--gray-50); border-radius: 8px;">
+                            <span>👋</span>
+                            <div>
+                                <strong>최민수</strong>님이 팀에 참여했습니다
+                                <span style="color: var(--gray-400); font-size: 13px;">· 1시간 전</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- 개발자 콘솔 안내 -->
+    <script>
+        console.log('%c🎓 GA4 AARRR 퍼널 분석 데모', 'font-size: 20px; font-weight: bold; color: #6366f1;');
+        console.log('%c이 페이지에서 발생하는 AARRR 이벤트를 확인하세요:', 'font-size: 14px; color: #666;');
+        console.log('%c• 🔄 Retention: 대시보드 재방문, 기능 사용', 'font-size: 12px;');
+        console.log('%c• 💡 Engagement: 통계 카드 클릭', 'font-size: 12px;');
+        console.log('%c• 📢 Referral: 팀원 초대', 'font-size: 12px;');
+        console.log('---');
+    </script>
+</body>
+</html>

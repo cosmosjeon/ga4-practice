@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>결제 - TechFlow</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+
+        // AARRR Revenue 이벤트
+        const AARRR = {
+            trackRevenue: function(plan, amount, currency) {
+                gtag('event', 'purchase', {
+                    'event_category': 'AARRR',
+                    'event_label': plan,
+                    'transaction_id': 'TXN_' + Date.now(),
+                    'value': amount,
+                    'currency': currency || 'KRW',
+                    'items': [{
+                        'item_name': plan + ' Plan',
+                        'price': amount,
+                        'quantity': 1
+                    }]
+                });
+                console.log('💰 [Revenue] 결제 완료:', plan, amount + '원');
+            },
+            trackCheckoutStep: function(step, details) {
+                gtag('event', 'checkout_progress', {
+                    'event_category': 'funnel',
+                    'event_label': step,
+                    'checkout_step': step,
+                    ...details
+                });
+                console.log('🛒 [Checkout]', step, details || '');
+            }
+        };
+
+        // 플랜 정보
+        const plans = {
+            'free': { name: 'Free', price: 0, period: '월' },
+            'pro': { name: 'Pro', price: 15000, period: '월' },
+            'enterprise': { name: 'Enterprise', price: 50000, period: '월' }
+        };
+
+        // 페이지 로드 시 플랜 확인
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planId = urlParams.get('plan') || 'pro';
+            const plan = plans[planId] || plans['pro'];
+
+            document.getElementById('planName').textContent = plan.name + ' 플랜';
+            document.getElementById('planPrice').textContent = '₩' + plan.price.toLocaleString();
+            document.getElementById('planTotal').textContent = '₩' + plan.price.toLocaleString();
+
+            // 체크아웃 시작 이벤트
+            gtag('event', 'begin_checkout', {
+                'event_category': 'AARRR',
+                'value': plan.price,
+                'currency': 'KRW',
+                'items': [{
+                    'item_name': plan.name + ' Plan',
+                    'price': plan.price,
+                    'quantity': 1
+                }]
+            });
+
+            AARRR.trackCheckoutStep('checkout_start', { plan: planId, amount: plan.price });
+        });
+    </script>
+</head>
+<body>
+    <div class="checkout-page">
+        <nav class="navbar" style="position: relative; background: transparent; border: none;">
+            <div class="nav-container">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon">⚡</span>
+                    TechFlow
+                </a>
+                <a href="dashboard.html" class="btn btn-outline">← 대시보드로</a>
+            </div>
+        </nav>
+
+        <div class="checkout-container">
+            <div class="checkout-card">
+                <div class="checkout-header">
+                    <h1>🎉 결제 페이지</h1>
+                    <p>업그레이드하고 더 많은 기능을 사용하세요</p>
+                </div>
+
+                <div class="checkout-body">
+                    <!-- 플랜 요약 -->
+                    <div class="plan-summary">
+                        <h3>주문 요약</h3>
+                        <div class="plan-detail">
+                            <span id="planName">Pro 플랜</span>
+                            <span id="planPrice">₩15,000</span>
+                        </div>
+                        <div class="plan-detail">
+                            <span>결제 주기</span>
+                            <span>월간</span>
+                        </div>
+                        <div class="plan-detail">
+                            <span>합계</span>
+                            <span id="planTotal">₩15,000</span>
+                        </div>
+                    </div>
+
+                    <!-- 결제 폼 -->
+                    <form id="checkoutForm" onsubmit="handlePayment(event)">
+                        <div class="form-group">
+                            <label>카드 번호</label>
+                            <input type="text" placeholder="1234 5678 9012 3456" required
+                                   onfocus="AARRR.trackCheckoutStep('card_number_focus')">
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                            <div class="form-group">
+                                <label>만료일</label>
+                                <input type="text" placeholder="MM/YY" required
+                                       onfocus="AARRR.trackCheckoutStep('expiry_focus')">
+                            </div>
+                            <div class="form-group">
+                                <label>CVC</label>
+                                <input type="text" placeholder="123" required
+                                       onfocus="AARRR.trackCheckoutStep('cvc_focus')">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>카드 소유자명</label>
+                            <input type="text" placeholder="홍길동" required
+                                   onfocus="AARRR.trackCheckoutStep('cardholder_focus')">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large" style="width: 100%; margin-top: 24px;">
+                            💳 결제하기
+                        </button>
+                    </form>
+
+                    <div style="margin-top: 24px; text-align: center;">
+                        <p style="font-size: 13px; color: var(--gray-400);">
+                            🔒 SSL 암호화로 안전하게 결제됩니다
+                        </p>
+                        <div style="margin-top: 12px; display: flex; justify-content: center; gap: 12px;">
+                            <span style="padding: 4px 8px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">VISA</span>
+                            <span style="padding: 4px 8px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">Mastercard</span>
+                            <span style="padding: 4px 8px; background: var(--gray-100); border-radius: 4px; font-size: 12px;">AMEX</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 보장 문구 -->
+            <div style="margin-top: 24px; text-align: center; color: var(--gray-600);">
+                <p>✓ 30일 환불 보장 &nbsp; ✓ 언제든 취소 가능 &nbsp; ✓ 24시간 고객 지원</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function handlePayment(e) {
+            e.preventDefault();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const planId = urlParams.get('plan') || 'pro';
+            const plan = plans[planId] || plans['pro'];
+
+            // GA4 구매 완료 이벤트
+            AARRR.trackRevenue(plan.name, plan.price, 'KRW');
+
+            AARRR.trackCheckoutStep('payment_complete', {
+                plan: planId,
+                amount: plan.price
+            });
+
+            // 성공 메시지
+            alert('🎉 결제가 완료되었습니다!\n\n' + plan.name + ' 플랜을 사용할 수 있습니다.');
+            window.location.href = 'dashboard.html';
+        }
+
+        // 개발자 콘솔 안내
+        console.log('%c🎓 GA4 AARRR 퍼널 분석 데모 - 결제 페이지', 'font-size: 20px; font-weight: bold; color: #6366f1;');
+        console.log('%c이 페이지에서 발생하는 Revenue 이벤트를 확인하세요:', 'font-size: 14px; color: #666;');
+        console.log('%c• 💰 Revenue: 결제 완료 시 purchase 이벤트', 'font-size: 12px;');
+        console.log('%c• 🛒 Checkout: 각 입력 필드 포커스 시 퍼널 추적', 'font-size: 12px;');
+        console.log('---');
+    </script>
+</body>
+</html>

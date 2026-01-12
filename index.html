@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechFlow - SaaS 생산성 도구</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-XXXXXXXXXX');
+
+        // AARRR 퍼널 이벤트 추적 함수들
+        const AARRR = {
+            // Acquisition - 획득
+            trackAcquisition: function(source) {
+                gtag('event', 'acquisition', {
+                    'event_category': 'AARRR',
+                    'event_label': source,
+                    'traffic_source': source
+                });
+                console.log('📊 [Acquisition] 트래픽 소스:', source);
+            },
+
+            // Activation - 활성화
+            trackActivation: function(action) {
+                gtag('event', 'activation', {
+                    'event_category': 'AARRR',
+                    'event_label': action,
+                    'activation_type': action
+                });
+                console.log('🎯 [Activation] 활성화 액션:', action);
+            },
+
+            // Retention - 유지
+            trackRetention: function(feature) {
+                gtag('event', 'retention', {
+                    'event_category': 'AARRR',
+                    'event_label': feature,
+                    'feature_used': feature
+                });
+                console.log('🔄 [Retention] 기능 재사용:', feature);
+            },
+
+            // Revenue - 수익
+            trackRevenue: function(plan, amount) {
+                gtag('event', 'purchase', {
+                    'event_category': 'AARRR',
+                    'event_label': plan,
+                    'value': amount,
+                    'currency': 'KRW'
+                });
+                console.log('💰 [Revenue] 결제:', plan, amount + '원');
+            },
+
+            // Referral - 추천
+            trackReferral: function(method) {
+                gtag('event', 'referral', {
+                    'event_category': 'AARRR',
+                    'event_label': method,
+                    'share_method': method
+                });
+                console.log('📢 [Referral] 공유:', method);
+            }
+        };
+
+        // 페이지 로드 시 획득 추적
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const source = urlParams.get('utm_source') || 'direct';
+            AARRR.trackAcquisition(source);
+        });
+    </script>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <span class="logo-icon">⚡</span>
+                TechFlow
+            </a>
+            <div class="nav-links">
+                <a href="#features">기능</a>
+                <a href="#pricing">요금제</a>
+                <a href="dashboard.html">대시보드</a>
+                <a href="signup.html" class="btn btn-outline">로그인</a>
+                <a href="signup.html" class="btn btn-primary">무료 시작</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 히어로 섹션 -->
+    <section class="hero">
+        <div class="container">
+            <h1>팀 생산성을 <span class="highlight">200%</span> 높이세요</h1>
+            <p class="hero-subtitle">TechFlow와 함께라면 프로젝트 관리가 즐거워집니다.<br>지금 바로 무료로 시작해보세요.</p>
+            <div class="hero-cta">
+                <a href="signup.html" class="btn btn-primary btn-large" onclick="AARRR.trackActivation('hero_cta_click')">
+                    무료로 시작하기
+                </a>
+                <a href="#demo" class="btn btn-secondary btn-large" onclick="AARRR.trackActivation('watch_demo')">
+                    데모 보기 →
+                </a>
+            </div>
+            <p class="hero-note">✓ 신용카드 불필요 &nbsp; ✓ 14일 무료 체험 &nbsp; ✓ 언제든 취소 가능</p>
+        </div>
+        <div class="hero-image">
+            <div class="mockup">
+                <div class="mockup-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                </div>
+                <div class="mockup-content">
+                    <div class="mockup-sidebar">
+                        <div class="sidebar-item active"></div>
+                        <div class="sidebar-item"></div>
+                        <div class="sidebar-item"></div>
+                    </div>
+                    <div class="mockup-main">
+                        <div class="task-card"></div>
+                        <div class="task-card"></div>
+                        <div class="task-card"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 소셜 프루프 -->
+    <section class="social-proof">
+        <div class="container">
+            <p>1,000+ 팀이 TechFlow를 사용하고 있습니다</p>
+            <div class="logos">
+                <span class="company-logo">삼성전자</span>
+                <span class="company-logo">네이버</span>
+                <span class="company-logo">카카오</span>
+                <span class="company-logo">라인</span>
+                <span class="company-logo">토스</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 기능 섹션 -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>강력한 기능으로<br>업무 효율을 극대화하세요</h2>
+            <div class="features-grid">
+                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_task')">
+                    <div class="feature-icon">📋</div>
+                    <h3>스마트 태스크 관리</h3>
+                    <p>AI가 우선순위를 자동으로 분석하여 중요한 일부터 처리할 수 있도록 도와드립니다.</p>
+                </div>
+                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_team')">
+                    <div class="feature-icon">👥</div>
+                    <h3>실시간 협업</h3>
+                    <p>팀원들과 실시간으로 소통하고 프로젝트 진행 상황을 한눈에 파악하세요.</p>
+                </div>
+                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_analytics')">
+                    <div class="feature-icon">📊</div>
+                    <h3>상세한 분석</h3>
+                    <p>팀 생산성 지표를 분석하고 개선점을 찾아 더 효율적으로 일하세요.</p>
+                </div>
+                <div class="feature-card" onclick="AARRR.trackRetention('feature_view_integration')">
+                    <div class="feature-icon">🔗</div>
+                    <h3>다양한 연동</h3>
+                    <p>Slack, Notion, Google Drive 등 100+ 앱과 쉽게 연동됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 요금제 섹션 -->
+    <section id="pricing" class="pricing">
+        <div class="container">
+            <h2>심플한 요금제</h2>
+            <p class="pricing-subtitle">팀 규모에 맞는 플랜을 선택하세요</p>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">₩0<span>/월</span></div>
+                    <ul>
+                        <li>✓ 최대 5명</li>
+                        <li>✓ 기본 기능</li>
+                        <li>✓ 1GB 저장공간</li>
+                        <li>✗ 고급 분석</li>
+                    </ul>
+                    <a href="signup.html" class="btn btn-outline" onclick="AARRR.trackRevenue('free', 0)">무료로 시작</a>
+                </div>
+                <div class="pricing-card popular">
+                    <span class="badge">인기</span>
+                    <h3>Pro</h3>
+                    <div class="price">₩15,000<span>/월</span></div>
+                    <ul>
+                        <li>✓ 최대 20명</li>
+                        <li>✓ 모든 기능</li>
+                        <li>✓ 100GB 저장공간</li>
+                        <li>✓ 고급 분석</li>
+                    </ul>
+                    <a href="checkout.html?plan=pro" class="btn btn-primary" onclick="AARRR.trackRevenue('pro', 15000)">Pro 시작하기</a>
+                </div>
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">문의</div>
+                    <ul>
+                        <li>✓ 무제한 인원</li>
+                        <li>✓ 전용 지원</li>
+                        <li>✓ 무제한 저장공간</li>
+                        <li>✓ 맞춤 기능</li>
+                    </ul>
+                    <a href="#contact" class="btn btn-outline" onclick="AARRR.trackRevenue('enterprise_inquiry', 0)">문의하기</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 공유 섹션 (Referral) -->
+    <section class="referral">
+        <div class="container">
+            <h2>친구에게 공유하고<br>무료 이용 기간을 받으세요!</h2>
+            <p>친구가 가입하면 양쪽 모두 1개월 무료!</p>
+            <div class="share-buttons">
+                <button class="share-btn kakao" onclick="AARRR.trackReferral('kakao')">
+                    💬 카카오톡 공유
+                </button>
+                <button class="share-btn twitter" onclick="AARRR.trackReferral('twitter')">
+                    🐦 트위터 공유
+                </button>
+                <button class="share-btn link" onclick="AARRR.trackReferral('copy_link'); copyLink()">
+                    🔗 링크 복사
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA 섹션 -->
+    <section class="cta">
+        <div class="container">
+            <h2>지금 바로 시작하세요</h2>
+            <p>이미 10,000명 이상의 사용자가 TechFlow로 업무 효율을 높이고 있습니다.</p>
+            <a href="signup.html" class="btn btn-primary btn-large" onclick="AARRR.trackActivation('bottom_cta')">
+                무료로 시작하기
+            </a>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">⚡</span> TechFlow
+                    <p>팀 생산성의 새로운 기준</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#">이용약관</a>
+                    <a href="#">개인정보처리방침</a>
+                    <a href="#">고객센터</a>
+                </div>
+            </div>
+            <p class="copyright">© 2024 TechFlow. GA4 AARRR 퍼널 분석 데모용 사이트입니다.</p>
+        </div>
+    </footer>
+
+    <script>
+        function copyLink() {
+            navigator.clipboard.writeText(window.location.href + '?ref=friend');
+            alert('링크가 복사되었습니다!');
+        }
+    </script>
+</body>
+</html>
